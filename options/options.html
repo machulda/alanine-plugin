@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="options.css">
+
+</head>
+
+<body>
+<form id="options-form">
+    <label for="ip"><strong>IP address of Pi-hole:</strong></label>
+    <input type="text" id="ip">
+    <label for="port"><strong> Port of Pi-hole (usually 8221):</strong></label>
+    <input type="text" id="port">
+
+    <div id="notification-tray">
+        <label for="notifications-checkbox"><strong> Notifications enabled:</strong>     </label>
+        <input type="checkbox" id="notifications-checkbox">
+
+    </div>
+    <button type="submit">Save</button>
+</form>
+
+<script type="application/javascript" src="../browser-polyfill.js"></script>
+<script src="options.js"></script>
+</body>
+
+</html>

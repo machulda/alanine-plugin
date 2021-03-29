@@ -1,0 +1,12 @@
+{
+  "name": "plugin-poc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background-script.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webextension-polyfill": "^0.6.0"
+  }
+}

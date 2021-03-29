@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+  "name": "Alanine",
+  "description": "Use this extension to control your Pi-hole easily!",
+  "version": "1.0",
+  "author": "Kulda22",
+  "icons": {
+    "48": "icons/Logo48px.png",
+    "96": "icons/Logo96px.png"
+  },
+  "browser_action": {
+    "default_title": "Alanine",
+    "default_icon": {
+      "48": "icons/Logo48px.png",
+      "96": "icons/Logo96px.png"
+    },
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "scripts": [
+      "browser-polyfill.js",
+      "background/background-script.js"
+    ]
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "browser_style": true
+  },
+  "permissions": [
+    "activeTab",
+    "notifications",
+    "storage"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://kit.fontawesome.com; object-src 'self'"
+}
