@@ -7,7 +7,9 @@ Because Alanine is still new project,  we are in serious need of your feedback. 
 ## Overview
 Alanine plugin is open-sourced plugin for controlling your Pi-hole! This plugin uses alanine server to control your Pi-hole via REST interface.
 
-## Installation 
+## Installation
+
+This plugin uses Alanine server to control Pi-hole. Install instructions are [here](https://github.com/Kulda22/alanine)
 
 Firefox addon store : https://addons.mozilla.org/en-US/firefox/addon/alanine/
 
