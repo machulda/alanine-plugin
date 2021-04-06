@@ -37,7 +37,7 @@ const openSettings = document.querySelector("#open-settings");
 const indefinitelySliderHtml = "<strong>indefinitely</strong>";
 
 let state = {};
-/// msg - {id, ttl}
+/// msg - {id, ttl,message}
 let messageArray = [];
 
 

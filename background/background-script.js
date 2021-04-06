@@ -16,18 +16,19 @@ function ipToUrl(ip, port) {
 }
 
 async function getSavedPreferences() {
-    let newIPItem = await browser.storage.local.get('ip') || "192.168.1.0";
-    let newPortItem = await browser.storage.local.get('port') || "8221";
+    let newIPItem = await browser.storage.local.get('ip');
+    let newPortItem = await browser.storage.local.get('port');
+    let notificationsEnabledItem = await browser.storage.local.get("notifications_enabled") ;
 
-    serverAddress = ipToUrl(newIPItem.ip, newPortItem.port);
-    IP = newIPItem.ip;
-    notificationsEnabled = await browser.storage.local.get("notifications_enabled") || false;
+    serverAddress = ipToUrl(newIPItem.ip || "192.168.1.0", newPortItem.port || "8221");
+    IP = newIPItem.ip || "192.168.1.0";
+    notificationsEnabled = notificationsEnabledItem.notifications_enabled || false;
 }
 
 function processChangedPreferences(newIP, newPort, newNotificationsEnabled) {
     console.debug("IP changed to " + newIP);
     console.debug("Port changed to " + newPort);
-    console.debug("Notifications are  " + newPort);
+    console.debug("Notifications are  " + newNotificationsEnabled);
     serverAddress = ipToUrl(newIP, newPort);
     IP = newIP;
     notificationsEnabled = newNotificationsEnabled;
@@ -37,7 +38,6 @@ function processChangedPreferences(newIP, newPort, newNotificationsEnabled) {
 
 function isPopupOpen() {
     const views = browser.extension.getViews({type: "popup"});
-
 
     return Array.isArray(views) && views.length !== 0;
 }
@@ -438,11 +438,9 @@ async function whitelist(payloadObject) {
 }
 
 function checkHeartbeat() {
-
     return fetch(serverAddress + "/alanine", {method: "HEAD"}).then((response) => {
         response.status === 200 ? goOnline() : goOffline();
     }).catch(e => {
-        console.error(e);
         console.info("HB failed");
         goOffline()
     });
@@ -463,7 +461,11 @@ function checkIfOnline() {
 function popUpIsOpened() {
     setTimeout(checkIfOnline, 5000);
 
+
     checkHeartbeat().then(() => {
+        if (state.connected === false) {
+            sendStateToPopup();
+        }
         getNewState();
 
         if (state.connected) {
