@@ -11,9 +11,9 @@
 
 <body>
 <div id="offline-dialog" class="hidden">
-    <h2>Unfortunately, we are unable to connect to Pihole. Are the given settings correct ? </h2>
+    <h2>Unfortunately, we are unable to connect to Alanine. Are the given settings correct ? </h2>
     <form id="options-form">
-        <label for="ip"><strong>IP address of Pi-hole:</strong></label>
+        <label for="ip"><strong>IP address of Alanine server:</strong></label>
         <input type="text" id="ip">
         <label for="port"><strong> Port (usually 8221):</strong></label>
         <input type="text" id="port">
@@ -25,7 +25,8 @@
         </div>
         <button type="submit">Save</button>
     </form>
-
+    <p><em>Please, help us with your feedback via <a target="_blank" href="https://forms.gle/AU2TKsVE4DVNAxHh6">this
+        form</a></em></p>
 </div>
 
 <div id="popup-controls" class="loading">
@@ -85,7 +86,9 @@
     <button id="gravity-update" class="button second-button-row">Update Gravity</button>
     <button id="dns-reload" class="button second-button-row">Restart DNS</button>
 
-    <p id="version">version : 1.0</p>
+    <p id="version"></p>
+    <p id="feedback-prompt"><em>Please, help us with your feedback via <a target="_blank" href="https://forms.gle/AU2TKsVE4DVNAxHh6">this
+        form</a></em></p>
 </div>
 <form id="domain-form" class="hidden">
     <button id="cancel-add-domain" class="cancel-button">back</button>
