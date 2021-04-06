@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Alanine",
   "description": "Use this extension to control your Pi-hole easily!",
-  "version": "1.0",
+  "version": "1.1",
   "author": "Kulda22",
   "icons": {
     "48": "icons/Logo48px.png",
