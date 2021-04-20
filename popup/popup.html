@@ -39,7 +39,10 @@
     <div id="DNS-blocking-options" class="control-wrapper">
         <h3>DNS Blocking</h3>
         <div id="blocking-slider-wrapper" class="slider-wrapper">
-            <div id="blocking-slider-value" class="slider-value"><strong>indefinitely</strong></div>
+            <div id="blocking-slider-value" class="slider-value"> Disable for:
+                <div><i class="far fa-hourglass"></i> <span id="blocking-time-value"> <strong>indefinitely</strong></span>
+                </div>
+            </div>
             <input type="range" min="0" max="100" value="0" id="blocking-slider" step="5">
         </div>
         <!--from https://codepen.io/codebubb/pen/OJXRGyN-->
@@ -52,8 +55,8 @@
             >
             <label for="status">
                 <div class="status-switch"
-                     data-unchecked="Off"
-                     data-checked="On">
+                     data-unchecked="Disabled"
+                     data-checked="Enabled">
                 </div>
             </label>
         </div>
@@ -61,10 +64,13 @@
     <div id="logging-options" class="control-wrapper">
         <h3>Logging</h3>
         <div id="logging-slider-wrapper" class="slider-wrapper">
-            <div id="logging-slider-value" class="slider-value"><strong>indefinitely</strong></div>
+            <div id="logging-slider-value" class="slider-value"> Disable for:
+                <div><i class="far fa-hourglass"></i> <span id="logging-time-value"> <strong>indefinitely</strong></span>
+                </div>
+            </div>
             <input type="range" min="0" max="100" value="0" id="logging-slider" step="5">
         </div>
-        <!--from https://codepen.io/codebubb/pen/OJXRGyN-->
+        <!--        from https://codepen.io/codebubb/pen/OJXRGyN-->
         <div class="custom-checkbox"
              id="logging-checkbox"
         >
@@ -75,11 +81,13 @@
             >
             <label for="logging-status">
                 <div class="status-switch"
-                     data-unchecked="Off"
-                     data-checked="On">
+                     data-unchecked="Disabled"
+                     data-checked="Enabled">
                 </div>
             </label>
         </div>
+
+
     </div>
     <button id="add-domain" class="button first-button-row">Black/Whitelist Domain</button>
 
@@ -87,7 +95,8 @@
     <button id="dns-reload" class="button second-button-row">Restart DNS</button>
 
     <p id="version"></p>
-    <p id="feedback-prompt"><em>Please, help us with your feedback via <a target="_blank" href="https://forms.gle/AU2TKsVE4DVNAxHh6">this
+    <p id="feedback-prompt"><em>Please, help us with your feedback via <a target="_blank"
+                                                                          href="https://forms.gle/AU2TKsVE4DVNAxHh6">this
         form</a></em></p>
 </div>
 <form id="domain-form" class="hidden">

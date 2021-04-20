@@ -4,8 +4,8 @@ const enableLoggingCheckbox = document.querySelector("#logging-status");
 const blockingSlider = document.querySelector("#blocking-slider");
 const loggingSlider = document.querySelector("#logging-slider");
 
-const blockingSliderValue = document.querySelector("#blocking-slider-value");
-const loggingSliderValue = document.querySelector("#logging-slider-value");
+const blockingSliderValue = document.querySelector("#blocking-time-value");
+const loggingSliderValue = document.querySelector("#logging-time-value");
 
 const blockingSliderWrapper = document.querySelector("#blocking-slider-wrapper");
 const loggingSliderWrapper = document.querySelector("#logging-slider-wrapper");
@@ -295,3 +295,5 @@ openSettings.addEventListener("click", () => {
 });
 
 setInterval(messageCleaner, 1000);
+
+

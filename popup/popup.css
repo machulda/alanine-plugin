@@ -38,6 +38,7 @@ button, input[type=submit] {
     color: #fff;
     background-color: #3c8dbc;
     margin: 0.1em;
+    letter-spacing: 0.05em;
 }
 
 
@@ -63,6 +64,8 @@ button, input[type=submit] {
     margin-top: -1.1em;
     margin-left: 5px;
     background: white;
+    font-size: 1.3em;
+
 }
 
 .slider-wrapper {
@@ -84,7 +87,13 @@ button, input[type=submit] {
     grid-row: slider;
     justify-content: center;
 }
-
+.slider-value div{
+    margin-top: 0.3em;
+}
+/*font awesome icons*/
+.fa, .fab, .fad, .fal, .far, .fas {
+    color: #367fa9;
+}
 
 .custom-checkbox {
     justify-content: center;
@@ -105,7 +114,6 @@ button, input[type=submit] {
     cursor: pointer;
 
     font-size: 1.5em;
-    color: #367fa9;
 }
 
 #open-admin {
@@ -259,12 +267,14 @@ input[type=range]::-moz-range-track {
 /* end of slider css*/
 /*toggle switch start*/
 
+/*width of whole checkbox*/
 .custom-checkbox {
     width: 200px;
     height: 50px;
     font-size: 1.5em;
 }
 
+/*hide default checkbox*/
 .custom-checkbox .switch-input {
     display: none;
 }
@@ -274,22 +284,26 @@ input[type=range]::-moz-range-track {
     width: 100%;
 }
 
+/*status switch that is child of label that is first child of switch input
+    default look of off switch
+*/
 .custom-checkbox .switch-input + label > .status-switch {
     cursor: pointer;
     width: 100%;
     height: 100%;
     position: relative;
-    background-color: #e0bf20;
+    background-color: #adadad;
     color: white;
     transition: all 0.5s ease;
     padding: 3px;
     border-radius: 3px;
 }
 
+/*that moving thingy*/
 .custom-checkbox .switch-input + label > .status-switch:before, .custom-checkbox .switch-input + label > .status-switch:after {
     border-radius: 2px;
     height: calc(100% - 6px);
-    width: calc(50% - 3px);
+    width: calc(10%);
     display: flex;
     align-items: center;
     position: absolute;
@@ -297,33 +311,41 @@ input[type=range]::-moz-range-track {
     transition: all 0.3s ease;
 }
 
+
+.custom-checkbox .switch-input + label > .status-switch:after {
+    width: calc(90%);
+
+}
+
+/*off half when is unchecked*/
 .custom-checkbox .switch-input + label > .status-switch:before {
     background-color: white;
-    color: #e0bf20;
+    color: #adadad;
     box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.2);
     left: 3px;
     z-index: 10;
+    content: ' ';
+}
+
+/*on half when is unchecked*/
+
+.custom-checkbox .switch-input + label > .status-switch:after {
     content: attr(data-unchecked);
 }
 
-.custom-checkbox .switch-input + label > .status-switch:after {
-    right: 0;
-    content: attr(data-checked);
-}
-
 .custom-checkbox .switch-input:checked + label > .status-switch {
-    background-color: #367fa9;
+    background-color: #2999da;
 }
 
 .custom-checkbox .switch-input:checked + label > .status-switch:after {
     left: 0;
-    content: attr(data-unchecked);
+    content: attr(data-checked);
 }
 
 .custom-checkbox .switch-input:checked + label > .status-switch:before {
-    color: #367fa9;
-    left: 50%;
-    content: attr(data-checked);
+    color: #2999da;
+    left: calc(90% - 3px);
+    content: " ";
 }
 
 /*end of toggle switch*/
@@ -341,8 +363,8 @@ input[type=range]::-moz-range-track {
 
     grid-row: top-row;
 
-    justify-self: start;
-    grid-column: 1;
+    justify-self: end;
+    grid-column: 2;
 }
 
 #domain-form label[for=domain-input] {
