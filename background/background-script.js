@@ -15,6 +15,10 @@ function ipToUrl(ip, port) {
     return "http://" + ip + ":" + port;
 }
 
+/**
+ * Loads saved preferences.
+ * @returns {Promise<void>}
+ */
 async function getSavedPreferences() {
     let newIPItem = await browser.storage.local.get('ip');
     let newPortItem = await browser.storage.local.get('port');
@@ -25,6 +29,12 @@ async function getSavedPreferences() {
     notificationsEnabled = notificationsEnabledItem.notifications_enabled || false;
 }
 
+/**
+ * changes local variables to new values.
+ * @param newIP
+ * @param newPort
+ * @param newNotificationsEnabled
+ */
 function processChangedPreferences(newIP, newPort, newNotificationsEnabled) {
     console.debug("IP changed to " + newIP);
     console.debug("Port changed to " + newPort);
@@ -36,7 +46,11 @@ function processChangedPreferences(newIP, newPort, newNotificationsEnabled) {
     checkHeartbeat();
 }
 
-function isPopupOpen() {
+/**
+ * Checks if popup is opened. Sometimes not really reliable, but that may be caused by bad timing.
+ * @returns {boolean}
+ */
+function isPopupOpened() {
     const views = browser.extension.getViews({type: "popup"});
 
     return Array.isArray(views) && views.length !== 0;
@@ -48,15 +62,20 @@ function changeIconToAlert() {
     );
 }
 
-/// todo change - see popup counterpart
+/**
+ * Send message to popup.
+ * If is popup opened, send it.
+ * If not, add it to backlog, change icon and send notification if enabled.
+ * @param message
+ */
 function sendToPopUp(message) {
-    if (isPopupOpen()) {
+    if (isPopupOpened()) {
         browser.runtime.sendMessage(message).catch((e) => {
             console.debug("popup was closed while sending message", message);
             console.error(e);
         })
     } else if (message.type === "user-message") {
-        // todo
+
         console.debug("Adding message to queue");
         missedMessagesArr.unshift(message);
 
@@ -113,6 +132,11 @@ async function getVersion() {
 
 }
 
+/**
+ * Get new state and send it to popup.
+ * Also get a version of Pi-hole.
+ * @returns {Promise<void>}
+ */
 async function getNewState() {
     if (!state.connected) {
         return;
@@ -273,6 +297,10 @@ async function disableLogging(time) {
 
 }
 
+/**
+ * Restart/reload DNS server
+ * @returns {Promise<void>}
+ */
 async function reload() {
     let resp, message;
     try {
@@ -315,6 +343,11 @@ async function updateGravity() {
 
 }
 
+/**
+ * Blacklist domain
+ * @param payloadObject - object - { name: domainname, type: type} type is regex, exact,wildcard
+ * @returns {Promise<void>}
+ */
 async function blacklist(payloadObject) {
     let resp, message, url;
     if (payloadObject.name === null || payloadObject.name === "") {
@@ -376,6 +409,11 @@ async function blacklist(payloadObject) {
     }
 }
 
+/**
+ * Whitelist domain
+ * @param payloadObject - object - { name: domainname, type: type} type is regex, exact,wildcard
+ * @returns {Promise<void>}
+ */
 async function whitelist(payloadObject) {
     let resp, message, url;
     if (payloadObject.name === null || payloadObject.name === "") {
@@ -437,6 +475,10 @@ async function whitelist(payloadObject) {
     }
 }
 
+/**
+ * Call server heartbeat endpoint.
+ * @returns {Promise<Response>}
+ */
 function checkHeartbeat() {
     return fetch(serverAddress + "/alanine", {method: "HEAD"}).then((response) => {
         response.status === 200 ? goOnline() : goOffline();
@@ -450,14 +492,20 @@ function sendStateToPopup() {
     sendToPopUp({type: "state", load: state});
 }
 
+/**
+ * While is popup opened check heartbeat
+ */
 function checkIfOnline() {
-    if (isPopupOpen()) {
+    if (isPopupOpened()) {
         checkHeartbeat();
         setTimeout(checkIfOnline, 5000);
     }
 }
 
-
+/**
+ * This is called after popup is opened. Sets periodic check for heartbeat.
+ * Then calls hearthbeat, and if is online it sends backlogged messages
+ */
 function popUpIsOpened() {
     setTimeout(checkIfOnline, 5000);
 
@@ -469,7 +517,7 @@ function popUpIsOpened() {
         getNewState();
 
         if (state.connected) {
-            if (isPopupOpen()) {
+            if (isPopupOpened()) {
                 while (missedMessagesArr.length) {
                     browser.runtime.sendMessage(missedMessagesArr.pop()).catch((e) => {
                         console.error(e);
@@ -480,6 +528,13 @@ function popUpIsOpened() {
     })
 }
 
+/**
+ * This function handles messages from popup / options
+ * @param request is object -  {type: type, payload: payloadObject}
+ * @param sender
+ * @param sendResponse
+ * @returns
+ */
 function handleMessage(request, sender, sendResponse) {
     switch (request.type) {
         case "hello":
@@ -521,7 +576,8 @@ function handleMessage(request, sender, sendResponse) {
 }
 
 /// we chain it because we  get IP async
+// this runs after browser is opened. Get saved preferences, and then check for HB.
 getSavedPreferences().then(checkHeartbeat);
 
-
+/// add listener
 browser.runtime.onMessage.addListener(handleMessage);

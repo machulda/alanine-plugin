@@ -1,38 +1,42 @@
-const enableBlockingCheckbox = document.querySelector("#status");
-const enableLoggingCheckbox = document.querySelector("#logging-status");
+/**
+ * Query selectors
+ *
+ */
+const enableBlockingCheckbox = document.getElementById("status");
+const enableLoggingCheckbox = document.getElementById("logging-status");
 
-const blockingSlider = document.querySelector("#blocking-slider");
-const loggingSlider = document.querySelector("#logging-slider");
+const blockingSlider = document.getElementById("blocking-slider");
+const loggingSlider = document.getElementById("logging-slider");
 
-const blockingSliderValue = document.querySelector("#blocking-time-value");
-const loggingSliderValue = document.querySelector("#logging-time-value");
+const blockingSliderValue = document.getElementById("blocking-time-value");
+const loggingSliderValue = document.getElementById("logging-time-value");
 
-const blockingSliderWrapper = document.querySelector("#blocking-slider-wrapper");
-const loggingSliderWrapper = document.querySelector("#logging-slider-wrapper");
+const blockingSliderWrapper = document.getElementById("blocking-slider-wrapper");
+const loggingSliderWrapper = document.getElementById("logging-slider-wrapper");
 
 
-const versionParagraph = document.querySelector("#version");
-const dnsReloadButton = document.querySelector("#dns-reload");
-const gravityUpdateButton = document.querySelector("#gravity-update");
-const infobox = document.querySelector("#message-box");
+const versionParagraph = document.getElementById("version");
+const dnsReloadButton = document.getElementById("dns-reload");
+const gravityUpdateButton = document.getElementById("gravity-update");
+const infobox = document.getElementById("message-box");
 /// add domain to black/white list selectors
 
-const addDomainButton = document.querySelector("#add-domain");
-const cancelAddDomain = document.querySelector("#cancel-add-domain");
-const domainform = document.querySelector("#domain-form");
-const submitWhitelist = document.querySelector("#submit-whitelist");
-const submitBlacklist = document.querySelector("#submit-blacklist");
+const addDomainButton = document.getElementById("add-domain");
+const cancelAddDomain = document.getElementById("cancel-add-domain");
+const domainform = document.getElementById("domain-form");
+const submitWhitelist = document.getElementById("submit-whitelist");
+const submitBlacklist = document.getElementById("submit-blacklist");
 
 
-const domainInput = document.querySelector("#domain-input");
-const popupControls = document.querySelector("#popup-controls");
+const domainInput = document.getElementById("domain-input");
+const popupControls = document.getElementById("popup-controls");
 
-const offlineDialog = document.querySelector("#offline-dialog");
+const offlineDialog = document.getElementById("offline-dialog");
 
 const spinner = document.getElementById("spinner");
 
-const openPiholeAdmin = document.querySelector("#open-admin");
-const openSettings = document.querySelector("#open-settings");
+const openPiholeAdmin = document.getElementById("open-admin");
+const openSettings = document.getElementById("open-settings");
 
 const indefinitelySliderHtml = "<strong>indefinitely</strong>";
 
@@ -49,6 +53,11 @@ function removeLoadingVisual() {
     popupControls.classList.remove("loading");
 }
 
+
+/**
+ * Change inner state to new state.
+ * @param newState
+ */
 const processState = (newState) => {
     /// if state didn't change, there is no need for update
     if (newState === state) {
@@ -57,7 +66,7 @@ const processState = (newState) => {
 /// we are opening popup with "loading visual" active (blurry grey background + spinner). so after we get state we can remove this visual.
     removeLoadingVisual();
 
-    /// change
+    /// if offline show dialog to enter ip and port. If offline show main control panel
     if (!newState.connected) {
         offlineDialog.classList.remove("hidden");
         domainform.classList.add("hidden");
@@ -90,11 +99,13 @@ const processState = (newState) => {
 
 };
 
+/**
+ * Send message to background that popup is opened
+ */
 const sayHelloToBackground = () => {
     browser.runtime.sendMessage({type: "hello"});
 };
 
-//// TODO: throws icon invalid, but works fine - seems like icon is wrongly sized, but it doesn't matter since we won't use this one.
 function changeIconToDefault() {
     browser.browserAction.setIcon(
         {path: "../icons/Logo48px.png"}
@@ -136,12 +147,17 @@ const enableLogging = () => {
     browser.runtime.sendMessage({type: 'enable-logging'}).catch((e) => console.error(e));
 };
 
-
+/**
+ * displays user messages.
+ * @param message
+ */
 function displayUserMessage(message) {
+    /// get id
     const id = messageArray.length === 0 ? 0 : messageArray[0].id + 1;
 
-    /// we want to have our most recent message on top
+    /// add message to message array. we want to have our most recent message on top so unshift.
     messageArray.unshift({id: id, ttl: 5, message: message});
+    /// display message
     switch (message.level) {
         case "info":
             infobox.innerHTML = `<p class="${message.level}" id="message-${id}"> <i class="fas fa-info-circle"></i> ${message.load}</p>` + infobox.innerHTML;
@@ -156,7 +172,9 @@ function displayUserMessage(message) {
 
 }
 
-
+/**
+ * Removes old messages. Subtracts 1 from time to live of each message and if ttl is negative remove it.
+ */
 function messageCleaner() {
     messageArray = messageArray.filter(function (entry) {
         entry.ttl--;
@@ -170,19 +188,6 @@ function messageCleaner() {
 }
 
 
-/// todo change - 2 types - update state or show message to user
-browser.runtime.onMessage.addListener(
-    // (message) => document.querySelector("#writeable").innerHTML = message
-    (message) => {
-        if (message.type === "user-message") {
-            displayUserMessage(message);
-        } else if (message.type === "state") {
-            processState(message.load)
-        } else {
-            console.error("unknown message: ", message)
-        }
-    }
-);
 
 const processDnsBlockingSwitch = (e) => {
     if (enableBlockingCheckbox.checked) {
@@ -211,10 +216,22 @@ function processUpdateGravity() {
     browser.runtime.sendMessage({type: 'update-gravity'}).catch((e) => console.error(e));
 }
 
+/**
+ * Hides main control panel, shows submenu for adding domain to list
+ */
 function processAddDomain() {
     popupControls.classList.add("hidden");
     domainform.classList.remove("hidden");
+}
 
+/**
+ * Hides submenu for adding domain to list, shows main control panel
+ */
+function hideAddDomainToList() {
+
+    domainform.classList.add("hidden");
+    popupControls.classList.remove("hidden");
+    domainInput.value = "";
 }
 
 function processBlacklistSubmit(e) {
@@ -223,11 +240,9 @@ function processBlacklistSubmit(e) {
         name: domainInput.value,
         type: document.querySelector('input[name="type"]:checked').value
     };
-    browser.runtime.sendMessage({type: "blacklist", payload: payload});
 
-    domainform.classList.add("hidden");
-    popupControls.classList.remove("hidden");
-    domainInput.value = "";
+    browser.runtime.sendMessage({type: "blacklist", payload: payload});
+    hideAddDomainToList();
 }
 
 function processWhitelistSubmit(e) {
@@ -238,9 +253,7 @@ function processWhitelistSubmit(e) {
     };
 
     browser.runtime.sendMessage({type: "whitelist", payload: payload});
-    domainform.classList.add("hidden");
-    popupControls.classList.remove("hidden");
-    domainInput.value = "";
+    hideAddDomainToList();
 }
 
 function processCancelAddDomain() {
@@ -257,32 +270,63 @@ function processBlockingSliderValueChange(e) {
     blockingSliderValue.innerHTML = blockingSlider.value !== "0" ? `<strong>${blockingSlider.value}</strong> minutes` : indefinitelySliderHtml;
 }
 
+
+
+
+/**
+ * listener for handling messages from background script
+ */
+browser.runtime.onMessage.addListener(
+    (message) => {
+        if (message.type === "user-message") {
+            displayUserMessage(message);
+        } else if (message.type === "state") {
+            processState(message.load)
+        } else {
+            console.error("unknown message: ", message)
+        }
+    }
+);
+
+
+
 sayHelloToBackground();
 
 changeIconToDefault();
-// document.querySelector("#disable").addEventListener("click", disableWithoutTime);
-// // document.querySelector("#").addEventListener("click", disableWithTime);
-// document.querySelector("#enable").addEventListener("click", enable);
 
+/**
+ * Event listeners are binded here.
+ */
+
+/**
+ *  disable / enable checkboxes and sliders
+ */
 enableBlockingCheckbox.addEventListener("click", processDnsBlockingSwitch);
 enableLoggingCheckbox.addEventListener("click", processLoggingSwitch);
 
 blockingSlider.addEventListener("input", processBlockingSliderValueChange);
 loggingSlider.addEventListener("input", processLoggingSliderValueChange);
-
+/**
+ * Popup buttons listeners
+ */
 dnsReloadButton.addEventListener("click", processReloadDns);
 gravityUpdateButton.addEventListener("click", processUpdateGravity);
-
 addDomainButton.addEventListener("click", processAddDomain);
+
+/**
+ * Add domain to list listeners.
+ */
+
 domainform.addEventListener("submit", (e) => {
     e.preventDefault()
 });
 
-
 submitBlacklist.addEventListener("click", processBlacklistSubmit);
 submitWhitelist.addEventListener("click", processWhitelistSubmit);
 cancelAddDomain.addEventListener("click", processCancelAddDomain);
-
+/**
+ * Event listener for opening web admin in new tab
+ */
 openPiholeAdmin.addEventListener("click", () => {
         browser.runtime.sendMessage({type: "get-ip"}).then((message) => {
             browser.tabs.create({url: "http://" + message.response + "/admin"})
@@ -290,10 +334,14 @@ openPiholeAdmin.addEventListener("click", () => {
     }
 );
 
+/**
+ * event listener for opening options page.
+ */
 openSettings.addEventListener("click", () => {
     browser.runtime.openOptionsPage()
 });
 
+/// periodically cleans old messages
 setInterval(messageCleaner, 1000);
 
 
